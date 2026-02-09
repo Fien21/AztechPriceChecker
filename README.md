@@ -1,4 +1,4 @@
-![Uploading image.png…]()
+A:\laravel-11-multi-auth\image.png
 
 ## Laravel + Tailwind Css Starter Project with Multi-Auth (Admin / Teacher and User )
 - Admin login ( http://localhost:8000/admin/login )
