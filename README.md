@@ -11,39 +11,27 @@
 
 ## How to Run the Code
 
-Follow these steps to set up and run the application locally:
-
-1.  **Clone the Repository:**
-    ```bash
-    git clone https://github.com/ajayyadavexpo/laravel-11-multi-auth.git
-    ```
-
-2.  **Navigate to the Project Directory:**
-    ```bash
-    cd laravel-11-multi-auth
-    ```
-
-3.  **Configure Environment:**
+1.  **Configure Environment:**
     ```bash
     cp .env.example .env
     ```
 
-4.  **Install Dependencies:**
+2.  **Install Dependencies:**
     ```bash
     composer install
     ```
 
-5.  **Generate Application Key:**
+3.  **Generate Application Key:**
     ```bash
     php artisan key:generate
     ```
 
-6.  **Run Migrations (Database Setup):**
+4.  **Run Migrations (Database Setup):**
     ```bash
     php artisan migrate:fresh
     ```
 
-7.  **Start the Development Server:**
+5.  **Start the Development Server:**
     ```bash
     php artisan serve
     ```
