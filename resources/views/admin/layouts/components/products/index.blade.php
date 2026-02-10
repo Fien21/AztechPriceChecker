@@ -44,10 +44,10 @@
                         <div class="flex items-center gap-3">
                             <select class="rounded border-gray-300 text-xs font-bold text-gray-600 uppercase focus:ring-red-500 focus:border-red-500 py-1">
                                 <option>Bulk Actions (0 selected)</option>
-                                <option>Delete Selected</option>
+                                <option>Archive Selected</option>
                                 <option>Update Price</option>
                             </select>
-                            <button class="text-xs font-black text-red-600 uppercase border border-red-600 px-3 py-1 rounded hover:bg-red-600 hover:text-white transition" onclick="showActionAlert('Bulk Action', 'Processing bulk update...')">Apply</button>
+                            <button class="text-xs font-black text-red-600 uppercase border border-red-600 px-3 py-1 rounded hover:bg-red-600 hover:text-white transition" onclick="showActionAlert('Bulk Action', 'Processing bulk archive...')">Apply</button>
                         </div>
                         
                         <div class="relative w-full md:w-80">
@@ -95,8 +95,9 @@
                                     </td>
                                     <td class="px-6 py-4 text-right whitespace-nowrap">
                                         <!-- Professional Text Buttons -->
+                                        <button class="px-3 py-1 border border-gray-600 text-gray-600 text-[10px] font-black uppercase rounded hover:bg-gray-600 hover:text-white transition mr-2" onclick="showActionAlert('View', 'Opening product overview...')">View</button>
                                         <button class="px-3 py-1 border border-blue-600 text-blue-600 text-[10px] font-black uppercase rounded hover:bg-blue-600 hover:text-white transition mr-2" onclick="showActionAlert('Edit', 'Loading product details for update...')">Edit</button>
-                                        <button class="px-3 py-1 border border-red-600 text-red-600 text-[10px] font-black uppercase rounded hover:bg-red-600 hover:text-white transition" onclick="confirmDeletion(1)">Delete</button>
+                                        <button class="px-3 py-1 border border-red-600 text-red-600 text-[10px] font-black uppercase rounded hover:bg-red-600 hover:text-white transition" onclick="confirmArchiving(1)">Archive</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -208,22 +209,22 @@
                     });
                 }
 
-                // Standard Deletion Confirmation
-                function confirmDeletion(productId) {
+                // Standard Archiving Confirmation
+                function confirmArchiving(productId) {
                     Swal.fire({
-                        title: 'CONFIRM DELETION',
-                        text: "This action will remove the record from the database permanently.",
+                        title: 'CONFIRM ARCHIVE',
+                        text: "This action will move the record to the archive database.",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#b91c1c',
                         cancelButtonColor: '#4b5563',
-                        confirmButtonText: 'DELETE RECORD',
+                        confirmButtonText: 'ARCHIVE RECORD',
                         cancelButtonText: 'CANCEL'
                     }).then((result) => {
                         if (result.isConfirmed) {
                             Swal.fire({
-                                title: 'DELETED',
-                                text: 'The record has been purged.',
+                                title: 'ARCHIVED',
+                                text: 'The record has been moved to the archives.',
                                 icon: 'success',
                                 confirmButtonColor: '#4b5563'
                             });
