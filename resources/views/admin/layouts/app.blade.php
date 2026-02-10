@@ -15,15 +15,15 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
-            /* Custom Scrollbar for a more professional look */
+            /* Custom Scrollbar adjusted for white theme */
             ::-webkit-scrollbar {
                 width: 8px;
             }
             ::-webkit-scrollbar-track {
-                background: #062C6B;
+                background: #f1f1f1; /* Changed from dark blue to light gray */
             }
             ::-webkit-scrollbar-thumb {
-                background: #ef4444;
+                background: #ef4444; /* Keep Admin Red */
                 border-radius: 10px;
             }
             ::-webkit-scrollbar-thumb:hover {
@@ -31,23 +31,25 @@
             }
         </style>
     </head>
-    <body class="font-sans antialiased bg-[#0B3D91] text-white">
+    <!-- CHANGED: bg-[#0B3D91] to bg-white and text-white to text-gray-900 -->
+    <body class="font-sans antialiased bg-white text-gray-900">
         
         <!-- Flexbox Wrapper to hold Sidebar and Main Content -->
         <div class="flex min-h-screen">
 
-            <!-- 1. Sidebar Component (Fixed position on large screens) -->
+            <!-- 1. Sidebar Component -->
             @include('admin.layouts.sidebar')
 
-            <!-- 2. Main Area (Grows to fill remaining space) -->
+            <!-- 2. Main Area -->
             <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
                 
-                <!-- Top Navigation (Admin Blue) -->
+                <!-- Top Navigation (Ensure your navigation component is also set to a light background) -->
                 @include('admin.layouts.navigation')
 
                 <!-- Page Heading (Header Slot) -->
                 @if (isset($header))
-                    <header class="bg-[#062C6B] shadow-lg border-b border-blue-900">
+                    <!-- CHANGED: bg-[#062C6B] to bg-white and border color -->
+                    <header class="bg-white shadow-sm border-b border-gray-200">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                             {{ $header }}
                         </div>
@@ -55,8 +57,8 @@
                 @endif
 
                 <!-- Page Content (Slot) -->
-                <!-- We set the background here for the main workspace -->
-                <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none">
+                <!-- CHANGED: Main workspace background is now pure white -->
+                <main class="flex-1 relative z-0 overflow-y-auto focus:outline-none bg-white">
                     <div class="py-6">
                         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                             {{ $slot }}
@@ -64,18 +66,17 @@
                     </div>
                 </main>
 
-                <!-- Optional: Admin Footer -->
-                <footer class="bg-[#062C6B] py-4 text-center text-xs text-blue-300 border-t border-blue-900">
+                <!-- Admin Footer -->
+                <!-- CHANGED: bg-[#062C6B] to bg-gray-50 and text color -->
+                <footer class="bg-gray-50 py-4 text-center text-xs text-gray-500 border-t border-gray-200">
                     &copy; {{ date('Y') }} AZTECH Computer Enterprises Inc. - Price Checker Administration
                 </footer>
             </div>
         </div>
 
-        <!-- Extra Scripts for Sidebar Toggle functionality if needed -->
         <script>
-            // This can be expanded if you want to add a mobile overlay toggle
             window.addEventListener('load', () => {
-                console.log('AZTECH Admin Layout Initialized');
+                console.log('AZTECH Admin Layout Initialized in Light Mode');
             });
         </script>
     </body>
