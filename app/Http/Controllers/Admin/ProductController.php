@@ -58,6 +58,30 @@ class ProductController extends Controller
     }
 
     /**
+     * Display the specific product record (Fixes 404 Error).
+     */
+    public function show(int $id)
+    {
+        // Find the product by ID or fail
+        $product = Product::findOrFail($id);
+
+        // Return the view located in your components folder
+        return view('admin.layouts.components.products.view', compact('product'));
+    }
+
+    /**
+     * Show the form for editing the specific product.
+     */
+    public function edit(int $id)
+    {
+        // Find the product by ID or fail
+        $product = Product::findOrFail($id);
+
+        // Return the edit view
+        return view('admin.layouts.components.products.edit', compact('product'));
+    }
+
+    /**
      * Update an existing product.
      */
     public function update(Request $request, int $id)

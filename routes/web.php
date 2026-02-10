@@ -47,6 +47,9 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
         // Add / Store
         Route::post('/store', [ProductController::class, 'store'])->name('store');
         
+        // --- ADDED THIS LINE TO FIX THE 404 ERROR WHEN VIEWING ---
+        Route::get('/{id}', [ProductController::class, 'show'])->name('show');
+        
         // --- ADDED THIS LINE TO FIX THE ERROR ---
         Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('edit');
         

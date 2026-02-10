@@ -1,7 +1,7 @@
 <x-admin-app-layout>
     <!-- Include SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Product Inventory Management') }}
@@ -72,34 +72,45 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 bg-white">
-                                <!-- Static Row Example -->
+                                @forelse($products as $product)
                                 <tr class="hover:bg-gray-50 transition border-b border-gray-100">
                                     <td class="px-6 py-4 text-center">
                                         <input type="checkbox" class="rounded border-gray-300 text-red-600 focus:ring-red-500">
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="h-10 w-14 bg-gray-200 rounded border border-gray-300 flex items-center justify-center text-[10px] text-gray-500 uppercase font-bold">No Img</div>
+                                        @if($product->image)
+                                            <img src="{{ asset('storage/' . $product->image) }}" class="h-10 w-14 object-cover rounded border border-gray-300">
+                                        @else
+                                            <div class="h-10 w-14 bg-gray-200 rounded border border-gray-300 flex items-center justify-center text-[10px] text-gray-500 uppercase font-bold">No Img</div>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="text-sm font-bold text-gray-900 uppercase">High-End Gaming Laptop V2</div>
-                                        <div class="text-[10px] text-gray-400 font-bold">GENSAN-STOCK-001</div>
+                                        <div class="text-sm font-bold text-gray-900 uppercase">{{ $product->product_name ?? $product->name }}</div>
+                                        <div class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">SKU: GENSAN-{{ str_pad($product->id, 4, '0', STR_PAD_LEFT) }} | STOCKS: {{ $product->stocks }}</div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="text-xs font-mono font-bold bg-gray-100 px-2 py-1 rounded text-gray-700">4801122334455</span>
+                                        <span class="text-xs font-mono font-bold bg-gray-100 px-2 py-1 rounded text-gray-700">{{ $product->barcode }}</span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="text-sm font-black text-gray-900">75,000.00</span>
+                                        <span class="text-sm font-black text-gray-900">{{ number_format($product->price, 2) }}</span>
                                     </td>
                                     <td class="px-6 py-4 text-sm font-bold text-red-600">
-                                        69,999.00
+                                        {{ number_format($product->discounted ?? $product->discounted_price, 2) }}
                                     </td>
                                     <td class="px-6 py-4 text-right whitespace-nowrap">
-                                        <!-- Professional Text Buttons -->
-                                        <button class="px-3 py-1 border border-gray-600 text-gray-600 text-[10px] font-black uppercase rounded hover:bg-gray-600 hover:text-white transition mr-2" onclick="showActionAlert('View', 'Opening product overview...')">View</button>
-                                        <button class="px-3 py-1 border border-blue-600 text-blue-600 text-[10px] font-black uppercase rounded hover:bg-blue-600 hover:text-white transition mr-2" onclick="showActionAlert('Edit', 'Loading product details for update...')">Edit</button>
-                                        <button class="px-3 py-1 border border-red-600 text-red-600 text-[10px] font-black uppercase rounded hover:bg-red-600 hover:text-white transition" onclick="confirmArchiving(1)">Archive</button>
+                                        <!-- Dynamic Route Sync -->
+                                        <a href="{{ route('admin.products.show', $product->id) }}" class="inline-block px-3 py-1 border border-gray-600 text-gray-600 text-[10px] font-black uppercase rounded hover:bg-gray-600 hover:text-white transition mr-2">View</a>
+                                        
+                                        <a href="{{ route('admin.products.edit', $product->id) }}" class="inline-block px-3 py-1 border border-blue-600 text-blue-600 text-[10px] font-black uppercase rounded hover:bg-blue-600 hover:text-white transition mr-2">Edit</a>
+                                        
+                                        <button type="button" class="px-3 py-1 border border-red-600 text-red-600 text-[10px] font-black uppercase rounded hover:bg-red-600 hover:text-white transition" onclick="confirmArchiving({{ $product->id }})">Archive</button>
                                     </td>
                                 </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="px-6 py-10 text-center text-gray-400 font-bold uppercase text-xs tracking-widest">No active products found in the database.</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -107,13 +118,10 @@
                     <!-- Professional Pagination Footer -->
                     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
                         <div class="text-[10px] text-gray-500 font-black uppercase tracking-widest">
-                            Records: <span class="text-gray-900">1 - 50</span> of <span class="text-gray-900">2,450</span>
+                            Showing <span class="text-gray-900">{{ $products->firstItem() }}</span> to <span class="text-gray-900">{{ $products->lastItem() }}</span> of <span class="text-gray-900">{{ $products->total() }}</span> records
                         </div>
                         <div class="flex gap-1">
-                            <button class="px-3 py-1 border border-gray-300 bg-white rounded text-[10px] font-bold text-gray-400 cursor-not-allowed uppercase">Prev</button>
-                            <button class="px-3 py-1 bg-red-600 text-white rounded text-[10px] font-bold uppercase">1</button>
-                            <button class="px-3 py-1 bg-white border border-gray-300 rounded text-[10px] font-bold text-gray-700 hover:bg-gray-100 uppercase transition">2</button>
-                            <button class="px-3 py-1 bg-white border border-gray-300 rounded text-[10px] font-bold text-gray-700 hover:bg-gray-100 uppercase transition">Next</button>
+                            {{ $products->links('pagination::tailwind') }}
                         </div>
                     </div>
                 </div>
@@ -137,11 +145,11 @@
                             <button @click="showAddModal = false" class="text-gray-400 hover:text-red-600 text-xl font-bold">&times;</button>
                         </div>
 
-                        <!-- Form Body -->
-                        <form id="addProductForm" method="POST" class="p-6 space-y-4">
+                        <!-- Form Body synced to admin.products.store -->
+                        <form id="addProductForm" action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
                             @csrf
                             
-                            <!-- I. Image Upload (Professional Placeholder) -->
+                            <!-- I. Image Upload -->
                             <div>
                                 <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest">Product Image Attachment</label>
                                 <div class="flex items-center justify-center w-full">
@@ -152,19 +160,25 @@
                                 </div>
                             </div>
 
-                            <!-- II. Product Name -->
+                            <!-- II. Product Name (Synced: product_name) -->
                             <div>
                                 <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest">Product Designation / Name</label>
-                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded text-xs font-bold uppercase focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none" name="name" required>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded text-xs font-bold uppercase focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none" name="product_name" required>
                             </div>
 
-                            <!-- III. Barcode -->
-                            <div>
-                                <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest">Barcode Identification Number</label>
-                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none" name="barcode" required>
+                            <!-- III. Barcode & Stocks (Stocks added to sync with Controller) -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest">Barcode ID</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none" name="barcode" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest">Initial Stocks</label>
+                                    <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded text-xs font-bold focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none" name="stocks" required>
+                                </div>
                             </div>
 
-                            <!-- Price Grid -->
+                            <!-- Price Grid (Synced: price & discounted) -->
                             <div class="grid grid-cols-2 gap-4">
                                 <!-- IV. Retail Price -->
                                 <div>
@@ -174,7 +188,7 @@
                                 <!-- V. Discounted Price -->
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 uppercase mb-1 tracking-widest">Discounted Price (PHP)</label>
-                                    <input type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded text-xs font-black focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-red-600" name="discounted_price">
+                                    <input type="number" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded text-xs font-black focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none text-red-600" name="discounted">
                                 </div>
                             </div>
 
@@ -192,9 +206,14 @@
                 </div>
             </div>
 
+            <!-- Hidden Archive Form -->
+            <form id="archive-form" method="POST" class="hidden">
+                @csrf
+                @method('PATCH')
+            </form>
+
             <!-- Dashboard Scripts -->
             <script>
-                // Standard Information Alert
                 function showActionAlert(title, text) {
                     Swal.fire({
                         title: title.toUpperCase(),
@@ -202,14 +221,10 @@
                         icon: 'info',
                         confirmButtonColor: '#ef4444',
                         timer: 1500,
-                        showConfirmButton: false,
-                        customClass: {
-                            title: 'text-sm font-black uppercase'
-                        }
+                        showConfirmButton: false
                     });
                 }
 
-                // Standard Archiving Confirmation
                 function confirmArchiving(productId) {
                     Swal.fire({
                         title: 'CONFIRM ARCHIVE',
@@ -222,17 +237,13 @@
                         cancelButtonText: 'CANCEL'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            Swal.fire({
-                                title: 'ARCHIVED',
-                                text: 'The record has been moved to the archives.',
-                                icon: 'success',
-                                confirmButtonColor: '#4b5563'
-                            });
+                            const form = document.getElementById('archive-form');
+                            form.action = '/admin/products/' + productId + '/archive';
+                            form.submit();
                         }
                     });
                 }
                 
-                // Form Submission Logic
                 function submitProductForm() {
                     const form = document.getElementById('addProductForm');
                     if (form.checkValidity()) {
@@ -240,29 +251,14 @@
                             title: 'UPDATING DATABASE...',
                             text: 'Please wait while the system processes the request.',
                             allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            },
-                            timer: 1200,
-                            timerProgressBar: true
-                        }).then(() => {
-                            Swal.fire({
-                                title: 'SUCCESS',
-                                text: 'New entry synchronized with master inventory.',
-                                icon: 'success',
-                                confirmButtonColor: '#b91c1c'
-                            }).then(() => {
-                                // Accessing Alpine.js component data to close modal
-                                const modalData = document.querySelector('[x-data]').__x.$data;
-                                modalData.showAddModal = false;
-                            });
+                            didOpen: () => { Swal.showLoading(); }
                         });
+                        form.submit();
                     } else {
                         form.reportValidity();
                     }
                 }
 
-                // Checkbox Logic
                 document.getElementById('selectAll').addEventListener('change', function() {
                     const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
                     checkboxes.forEach(cb => cb.checked = this.checked);
